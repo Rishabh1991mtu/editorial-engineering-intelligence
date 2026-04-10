@@ -1,7 +1,19 @@
 import { Rocket, Zap } from 'lucide-react';
 import { motion } from 'motion/react';
 
-export default function SimulationSummary() {
+interface SimulationSummaryProps {
+  baseDuration: number;
+  cumulativeImpact: number;
+  parallelOffset: number;
+  healthConfidence: number;
+}
+
+export default function SimulationSummary({ 
+  baseDuration, 
+  cumulativeImpact, 
+  parallelOffset,
+  healthConfidence
+}: SimulationSummaryProps) {
   return (
     <div className="bg-primary text-white rounded-2xl p-8 sticky top-24 shadow-2xl shadow-primary/30 border border-primary-container">
       <h3 className="text-xl font-headline font-bold mb-6 flex items-center gap-2">
@@ -10,19 +22,19 @@ export default function SimulationSummary() {
       </h3>
       
       <div className="space-y-6">
-        <SummaryRow label="Base Duration" value="180 Days" />
-        <SummaryRow label="ECR Cumulative" value="67 Days" />
-        <SummaryRow label="Parallel Offset" value="-58 Days" />
+        <SummaryRow label="Base Duration" value={`${baseDuration} Days`} />
+        <SummaryRow label="ECR Cumulative" value={`${cumulativeImpact} Days`} />
+        <SummaryRow label="Parallel Offset" value={`-${parallelOffset} Days`} />
 
         <div className="pt-4">
           <div className="flex justify-between items-center mb-2">
             <span className="text-xs font-bold uppercase text-primary-fixed-dim">Health Confidence</span>
-            <span className="text-xs font-bold">64%</span>
+            <span className="text-xs font-bold">{healthConfidence.toFixed(0)}%</span>
           </div>
           <div className="h-1.5 bg-white/20 rounded-full overflow-hidden">
             <motion.div 
               initial={{ width: 0 }}
-              animate={{ width: '64%' }}
+              animate={{ width: `${healthConfidence}%` }}
               transition={{ duration: 1, ease: "easeOut" }}
               className="h-full bg-secondary-fixed" 
             />

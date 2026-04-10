@@ -7,7 +7,7 @@ import SimulationSummary from './components/SimulationSummary'; // No change nee
 import { Zap } from 'lucide-react';
 import { motion } from 'motion/react';
 import { useState, useEffect } from 'react';
-import { immutableLaunchDate as fixedLaunchDate } from '../../src/mockData';
+import { immutableLaunchDate as fixedLaunchDate } from './mockData';
 
 // Define a type for ECR items
 export interface ECRItemType {
@@ -74,7 +74,7 @@ export default function App() {
           <section className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
             <KPICard 
               label="Projected End Date" 
-              value="Oct 10, 2026" 
+              value={projectedEndDate} 
               subtext="Based on current simulation data" 
               accentColor="bg-primary" 
             />
@@ -86,24 +86,29 @@ export default function App() {
             />
             <KPICard 
               label="Overall Impact" 
-              value="+9 days" 
+              value={`+${overallImpact} days`} 
               subtext="Critical Path Delay" 
               accentColor="bg-tertiary-container" 
-              warning
+              warning={overallImpactWarning}
             />
           </section>
 
           {/* ECR Timeline Visualization */}
-          <Timeline />
+          <Timeline ecrData={ecrData} />
 
           {/* Simulation Panel */}
           <section className="grid grid-cols-1 lg:grid-cols-12 gap-12">
             <div className="lg:col-span-8">
               <h2 className="text-2xl font-headline font-medium text-on-surface mb-8">Active ECR Simulation</h2>
-              <ECRSimulation />
+              <ECRSimulation ecrData={ecrData} onUpdateEcrDays={updateEcrDays} />
             </div>
             <div className="lg:col-span-4">
-              <SimulationSummary />
+              <SimulationSummary 
+                baseDuration={BASE_PROJECT_DURATION} 
+                cumulativeImpact={overallImpact} 
+                parallelOffset={0} 
+                healthConfidence={Math.max(0, 100 - overallImpact * 2)} 
+              />
             </div>
           </section>
         </main>

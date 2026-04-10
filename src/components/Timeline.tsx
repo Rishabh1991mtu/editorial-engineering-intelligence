@@ -58,8 +58,8 @@ export default function Timeline({ ecrData }: TimelineProps) {
         </div>
 
         {/* Bars */}
-        <div className="w-full flex flex-col gap-6 relative z-10"> {/* Changed ECR_DATA to timelineECRs */}
-          {ECR_DATA.map((ecr, index) => (
+        <div className="w-full flex flex-col gap-6 relative z-10">
+          {timelineECRs.map((ecr, index) => (
             <motion.div 
               key={ecr.id}
               initial={{ opacity: 0, x: -20 }}
