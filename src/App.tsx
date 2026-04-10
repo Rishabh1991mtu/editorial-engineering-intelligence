@@ -123,7 +123,7 @@ export default function App() {
           </motion.div>
 
           {/* KPI Panel */}
-          <section className="grid grid-cols-1 md:grid-cols-5 gap-8 mb-16">
+            <section className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
             <KPICard 
               label="Project Start Date" 
               value={new Date(projectStartDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })} 
@@ -155,6 +155,12 @@ export default function App() {
               subtext="Active tasks cost" 
               accentColor="bg-tertiary" 
             />
+              <KPICard
+                label="Program Health"
+                value={`${Math.max(0, 100 - overallImpact * 2)}%`}
+                subtext="Confidence score"
+                accentColor={overallImpact > 0 ? "bg-red-500" : "bg-green-500"}
+              />
           </section>
 
           {/* ECR Timeline Visualization */}
@@ -186,20 +192,10 @@ export default function App() {
           </div>
 
           {/* Simulation Panel */}
-          <section className="grid grid-cols-1 lg:grid-cols-12 gap-12">
-            <div className="lg:col-span-8">
+          <section className="mt-12">
               <h2 className="text-2xl font-headline font-medium text-on-surface mb-8">Active ECR Simulation</h2>
               <ECRSimulation ecrData={ecrData} onUpdateEcrDays={updateEcrDays} />
-            </div>
-            <div className="lg:col-span-4">
-              <SimulationSummary 
-                baseDuration={BASE_PROJECT_DURATION} 
-                cumulativeImpact={overallImpact} 
-                parallelOffset={0} 
-                healthConfidence={Math.max(0, 100 - overallImpact * 2)} 
-              />
-            </div>
-          </section>
+            </section>
         </main>
       </div>
 
