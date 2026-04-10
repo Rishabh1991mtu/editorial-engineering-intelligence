@@ -1,0 +1,44 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap');
+
+@theme {
+  --font-headline: "Manrope", ui-sans-serif, system-ui, sans-serif;
+  --font-body: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-label: "Inter", ui-sans-serif, system-ui, sans-serif;
+
+  --color-primary: #002452;
+  --color-secondary: #00677d;
+  --color-tertiary: #530007;
+  --color-background: #f7fafd;
+  --color-on-background: #181c1e;
+  --color-surface: #f7fafd;
+  --color-on-surface: #181c1e;
+  --color-surface-variant: #e0e3e6;
+  --color-on-surface-variant: #43474f;
+  --color-outline: #747780;
+  --color-outline-variant: #c4c6d0;
+  
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-low: #f1f4f7;
+  --color-surface-container: #ebeef1;
+  --color-surface-container-high: #e5e8eb;
+  --color-surface-container-highest: #e0e3e6;
+
+  --color-primary-container: #1a3a6c;
+  --color-on-primary-container: #89a5de;
+  --color-secondary-container: #7cdffe;
+  --color-on-secondary-container: #006277;
+  --color-tertiary-container: #790912;
+  --color-on-tertiary-container: #ff7e77;
+
+  --color-primary-fixed: #d7e2ff;
+  --color-primary-fixed-dim: #acc7ff;
+  --color-secondary-fixed: #b3ebff;
+  --color-secondary-fixed-dim: #70d3f2;
+}
+
+@layer base {
+  body {
+    @apply bg-background text-on-background font-body;
+  }
+}
