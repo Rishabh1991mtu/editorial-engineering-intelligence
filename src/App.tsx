@@ -6,8 +6,8 @@ import ECRSimulation from './components/ECRSimulation';
 import SimulationSummary from './components/SimulationSummary'; // No change needed here
 import { Zap } from 'lucide-react';
 import { motion } from 'motion/react';
-import { useState, useEffect } from 'react';
-import { immutableLaunchDate as fixedLaunchDate } from './mockData';
+import { useState, useEffect, useMemo } from 'react';
+import { immutableLaunchDate as fixedLaunchDate, ecrData as mockECRData } from './mockData';
 
 // Define a type for ECR items
 export interface ECRItemType {
@@ -17,32 +17,62 @@ export interface ECRItemType {
   description: string;
   days: number;
   impact: 'low' | 'moderate' | 'high';
+  program: string;
 }
-// The import path for mockData.js needs to be explicit
-const INITIAL_ECR_DATA: ECRItemType[] = [
-  { id: 'ECR-001', number: '01', title: 'Sensor Array Refactor', description: 'Optimization of power consumption in deep space mode', days: 5, impact: 'low' },
-  { id: 'ECR-002', number: '02', title: 'Kernel Patch 12.4', description: 'Critical vulnerability fix for telemetry stack', days: 8, impact: 'high' },
-  { id: 'ECR-003', number: '03', title: 'Structural Frame Audit', description: 'Compliance check for revised thermal shielding', days: 12, impact: 'high' },
-  { id: 'ECR-004', number: '04', title: 'Payload Integration', description: 'Wiring harness adjustment for secondary module', days: 20, impact: 'moderate' },
-];
+
+const INITIAL_ECR_DATA: ECRItemType[] = mockECRData.map((ecr, index) => ({
+  id: ecr.id,
+  number: String(index + 1).padStart(2, '0'),
+  title: ecr.description,
+  description: ecr.description,
+  days: ecr.duration,
+  impact: ecr.priority === 1 ? 'high' : ecr.priority === 2 ? 'moderate' : 'low',
+  program: ecr.program
+}));
 
 const BASE_PROJECT_DURATION = 180; // Days, as seen in SimulationSummary
 
 export default function App() {
   const [ecrData, setEcrData] = useState<ECRItemType[]>(INITIAL_ECR_DATA);
-  const [projectedEndDate, setProjectedEndDate] = useState('');
-  const [overallImpact, setOverallImpact] = useState(0);
-  const [overallImpactWarning, setOverallImpactWarning] = useState(false);
 
-  useEffect(() => {
-    const totalECRDays = ecrData.reduce((sum, ecr) => sum + ecr.days, 0);
-    setOverallImpact(totalECRDays);
-    setOverallImpactWarning(totalECRDays > 0); // Assuming any impact is a warning
+  const { criticalPathDuration, projectedEndDate, overallImpact, overallImpactWarning, groupedPrograms }: {
+    criticalPathDuration: number;
+    projectedEndDate: string;
+    overallImpact: number;
+    overallImpactWarning: boolean;
+    groupedPrograms: { [key: string]: ECRItemType[] };
+  } = useMemo(() => {
+    // Group by Program
+    const groups: { [key: string]: ECRItemType[] } = {};
+    ecrData.forEach(ecr => {
+      if (!groups[ecr.program]) {
+        groups[ecr.program] = [];
+      }
+      groups[ecr.program].push(ecr);
+    });
+
+    // Calculate Each Program's Duration
+    const programDurations: { [key: string]: number } = {};
+    for (const program in groups) {
+      programDurations[program] = groups[program].reduce((sum, ecr) => sum + ecr.days, 0);
+    }
+
+    // Find the Critical Path
+    const durations = Object.values(programDurations);
+    const maxDuration = durations.length > 0 ? Math.max(...durations) : 0;
+
+    const totalDuration = maxDuration;
 
     const currentProjectEndDate = new Date(fixedLaunchDate);
-    currentProjectEndDate.setDate(currentProjectEndDate.getDate() + totalECRDays); // This line uses fixedLaunchDate
-    setProjectedEndDate(currentProjectEndDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }));
-
+    currentProjectEndDate.setDate(currentProjectEndDate.getDate() + totalDuration);
+    
+    return {
+      criticalPathDuration: totalDuration,
+      projectedEndDate: currentProjectEndDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+      overallImpact: totalDuration,
+      overallImpactWarning: totalDuration > 0,
+      groupedPrograms: groups
+    };
   }, [ecrData]);
 
   const updateEcrDays = (id: string, newDays: number) => {
@@ -94,7 +124,14 @@ export default function App() {
           </section>
 
           {/* ECR Timeline Visualization */}
-          <Timeline ecrData={ecrData} />
+          <div className="space-y-8 mb-16">
+            {Object.entries(groupedPrograms).map(([programName, programECRs]) => (
+              <div key={programName} className="program-group">
+                <h3 className="text-lg font-headline font-medium text-on-surface mb-2">{programName} Program</h3>
+                <Timeline ecrData={programECRs} />
+              </div>
+            ))}
+          </div>
 
           {/* Simulation Panel */}
           <section className="grid grid-cols-1 lg:grid-cols-12 gap-12">
