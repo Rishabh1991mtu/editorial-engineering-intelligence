@@ -2,10 +2,7 @@ import { Minus, Plus } from 'lucide-react';
 import { ECRItemType } from '../App'; // Import ECRItemType from App.tsx
 
 interface ECRItemProps {
-  id: string;
-  number: string;
-  title: string;
-  description: string;
+  key?: string;
   ecr: ECRItemType; // Pass the whole ECR object
   onUpdateEcrDays: (id: string, newDays: number) => void;
   impactColorClass: string; // Pass the color class based on impact
@@ -27,6 +24,15 @@ function ECRItem({ ecr, onUpdateEcrDays, impactColorClass }: ECRItemProps) {
         <div>
           <h4 className="font-bold text-primary dark:text-white">{id}: {title}</h4>
           <p className="text-sm text-slate-500 dark:text-slate-400">{description}</p>
+          {ecr.affectedParts && ecr.affectedParts.length > 0 && (
+            <div className="mt-2 flex flex-wrap gap-2">
+              {ecr.affectedParts.map((part, index) => (
+                <span key={index} className="text-xs bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-2 py-1 rounded-md border border-slate-200 dark:border-slate-600">
+                  {part}
+                </span>
+              ))}
+            </div>
+          )}
         </div>
       </div>
       <div className="flex items-center gap-4">
@@ -37,7 +43,12 @@ function ECRItem({ ecr, onUpdateEcrDays, impactColorClass }: ECRItemProps) {
           >
             <Minus size={14} />
           </button>
-          <span className="w-12 text-center font-bold text-sm dark:text-white">{days}</span>
+          <input 
+            type="number" 
+            value={days} 
+            onChange={(e) => onUpdateEcrDays(id, Math.max(0, parseInt(e.target.value) || 0))}
+            className="w-12 text-center font-bold text-sm dark:text-white bg-transparent border-none focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+          />
           <button 
             onClick={() => handleDaysChange(1)}
             className="px-3 py-2 hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors text-slate-600 dark:text-slate-300"

@@ -3,6 +3,7 @@ import { ECRItemType } from '../App';
 
 interface TimelineProps {
   ecrData: ECRItemType[];
+  highlightBlocked?: boolean;
 }
 
 const impactBgColorMap = {
@@ -14,7 +15,7 @@ const impactBgColorMap = {
 // Assuming a total project length for visualization purposes, e.g., 200 days
 const TOTAL_TIMELINE_LENGTH_DAYS = 200;
 
-export default function Timeline({ ecrData }: TimelineProps) {
+export default function Timeline({ ecrData, highlightBlocked }: TimelineProps) {
   let cumulativeDays = 0;
 
   const timelineECRs = ecrData.map(ecr => {
@@ -28,56 +29,44 @@ export default function Timeline({ ecrData }: TimelineProps) {
       width: `${widthPercentage}%`,
       offset: `${offsetPercentage}%`,
       color: impactBgColorMap[ecr.impact],
+      status: ecr.status
     };
   });
 
   return (
-    <section className="mb-16">
-      <div className="flex items-baseline justify-between mb-8">
-        <h2 className="text-2xl font-headline font-medium text-on-surface">Timeline Projection</h2>
-        <div className="flex gap-4 text-xs font-label">
-          <LegendItem color="bg-blue-500" label="Low Impact" />
-          <LegendItem color="bg-orange-500" label="Moderate" />
-          <LegendItem color="bg-red-600" label="High Impact" />
-        </div>
+    <div className="relative bg-surface-container-low rounded-2xl p-10 h-32 flex items-center overflow-hidden border border-slate-200 dark:border-slate-800">
+      {/* Background Grid Lines */}
+      <div className="absolute inset-0 flex justify-between px-10 pointer-events-none opacity-20">
+        {[...Array(6)].map((_, i) => (
+          <div key={i} className="h-full border-l border-outline" />
+        ))}
       </div>
 
-      <div className="relative bg-surface-container-low rounded-2xl p-10 h-72 flex items-center overflow-hidden border border-slate-200 dark:border-slate-800">
-        {/* Background Grid Lines */}
-        <div className="absolute inset-0 flex justify-between px-10 pointer-events-none opacity-20">
-          {[...Array(6)].map((_, i) => (
-            <div key={i} className="h-full border-l border-outline" />
-          ))}
-        </div>
-
-        {/* LAUNCH Line */}
-        <div className="absolute top-0 bottom-0 left-[75%] border-l-2 border-dashed border-tertiary-container z-20 flex flex-col items-center">
-          <div className="bg-tertiary-container text-white text-[10px] font-bold px-2 py-0.5 rounded-b uppercase tracking-widest">
-            Launch
-          </div>
-        </div>
-
-        {/* Bars */}
-        <div className="w-full flex flex-col gap-6 relative z-10">
-          {timelineECRs.map((ecr, index) => (
-            <motion.div 
-              key={ecr.id}
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: index * 0.1 }}
-              className="flex items-center" 
-              style={{ marginLeft: ecr.offset }}
-            >
-              <div className={`${ecr.color} h-8 rounded-full shadow-sm flex items-center px-4 overflow-hidden min-w-fit`} style={{ width: ecr.width }}>
-                <span className="text-[10px] text-white font-bold whitespace-nowrap">
-                  {ecr.id} ({ecr.duration})
-                </span>
-              </div>
-            </motion.div>
-          ))}
-        </div>
+      {/* Bars */}
+      <div className="w-full flex flex-col gap-6 relative z-10">
+        {timelineECRs.map((ecr, index) => (
+          <motion.div 
+            key={ecr.id}
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: index * 0.1 }}
+            className="flex items-center" 
+            style={{ marginLeft: ecr.offset }}
+          >
+            <div className={`
+              ${ecr.color} 
+              h-8 rounded-full shadow-sm flex items-center px-4 overflow-hidden min-w-fit
+              ${highlightBlocked && ecr.status !== 'Blocked' ? 'opacity-30' : 'opacity-100'}
+              ${ecr.status === 'Blocked' ? 'border-2 border-dashed border-white' : ''} // Fallback for stripes
+            `} style={{ width: ecr.width }}>
+              <span className="text-[10px] text-white font-bold whitespace-nowrap">
+                {ecr.id} ({ecr.duration})
+              </span>
+            </div>
+          </motion.div>
+        ))}
       </div>
-    </section>
+    </div>
   );
 }
 
