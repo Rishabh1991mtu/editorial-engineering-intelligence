@@ -123,7 +123,7 @@ export default function App() {
           </motion.div>
 
           {/* KPI Panel */}
-            <section className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+            <section className="sticky top-0 z-20 grid grid-cols-1 md:grid-cols-3 gap-8 mb-16 bg-background py-4 shadow-sm -mx-4 px-4">
             <KPICard 
               label="Project Start Date" 
               value={new Date(projectStartDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })} 

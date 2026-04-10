@@ -11,7 +11,7 @@ export default function Sidebar() {
             <Compass className="text-white w-4 h-4" />
           </div>
           <div>
-            <h2 className="font-headline text-lg font-bold text-blue-950 dark:text-white leading-tight">Program Alpha</h2>
+            <h2 className="font-headline text-lg font-bold text-blue-950 dark:text-white leading-tight"></h2>
             <p className="text-xs text-slate-500 font-body">Engineering Intelligence</p>
           </div>
         </div>

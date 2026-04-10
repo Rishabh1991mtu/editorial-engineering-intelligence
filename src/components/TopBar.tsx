@@ -5,7 +5,6 @@ export default function TopBar() {
     <header className="fixed top-0 left-0 right-0 h-20 bg-slate-100/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 z-50 px-12 flex justify-between items-center">
       <div className="flex items-center gap-8">
         <span className="text-xl font-bold tracking-tight text-blue-950 dark:text-white font-headline">
-          Editorial Engineering Intelligence
         </span>
         <nav className="hidden md:flex items-center gap-6 font-body tracking-tight">
           <NavLink label="Dashboard" />
