@@ -129,6 +129,7 @@ export default function App() {
               value={new Date(projectStartDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })} 
               subtext="Simulation baseline" 
               accentColor="bg-slate-500" 
+              valueColor="text-blue-600"
             />
             <KPICard 
               label="Projected End Date" 
@@ -141,6 +142,7 @@ export default function App() {
               value={new Date(fixedLaunchDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })} 
               subtext="Institutional deadline" 
               accentColor="bg-secondary" 
+              valueColor="text-red-600"
             />
             <KPICard 
               label="Overall Impact" 

@@ -6,9 +6,10 @@ interface KPICardProps {
   subtext: string;
   accentColor: string;
   warning?: boolean;
+  valueColor?: string;
 }
 
-export default function KPICard({ label, value, subtext, accentColor, warning }: KPICardProps) {
+export default function KPICard({ label, value, subtext, accentColor, warning, valueColor }: KPICardProps) {
   return (
     <div className="bg-white dark:bg-slate-800 p-8 rounded-2xl relative overflow-hidden shadow-sm border border-slate-100 dark:border-slate-700">
       <div className={`absolute left-0 top-0 bottom-0 w-1 ${accentColor}`}></div>
@@ -17,7 +18,7 @@ export default function KPICard({ label, value, subtext, accentColor, warning }:
           {label}
         </span>
         <div className="flex flex-col">
-          <span className={`text-3xl md:text-4xl font-headline font-bold ${warning ? 'text-tertiary-container' : 'text-primary dark:text-white'}`}>
+          <span className={`text-3xl md:text-4xl font-headline font-bold ${valueColor || (warning ? 'text-tertiary-container' : 'text-primary dark:text-white')}`}>
             {value}
           </span>
           <span className={`text-xs mt-1 font-body flex items-center gap-1 ${warning ? 'text-tertiary-container/80 font-medium' : 'text-slate-500 dark:text-slate-400'}`}>
